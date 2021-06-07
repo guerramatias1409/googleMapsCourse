@@ -101,6 +101,21 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Stack(
           children: [
             GoogleMap(
+              //Activar o desactivar brujula
+              compassEnabled: false,
+              //Activar o desactivar barra de herramientas
+              mapToolbarEnabled: true,
+              // Activar o desactivar informacion de trafico
+              trafficEnabled: true,
+              // Activar o desactivar edificios 3D
+              buildingsEnabled: true,
+
+              // Activar o desactivar gestos
+              rotateGesturesEnabled: false,
+              scrollGesturesEnabled: false,
+              zoomControlsEnabled: false,
+              tiltGesturesEnabled: false,
+
               mapType: mapType,
               initialCameraPosition: CameraPosition(
                 target: position,
@@ -154,37 +169,37 @@ class _MyHomePageState extends State<MyHomePage> {
                     }
                   : {},
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8, right: 8),
-              child: SpeedDial(
-                animatedIcon: AnimatedIcons.menu_close,
-                overlayColor: Colors.black,
-                overlayOpacity: 0.5,
-                elevation: 8.0,
-                children: [
-                  SpeedDialChild(
-                    label: 'Normal',
-                    child: Icon(Icons.room),
-                    onTap: () => setState(() => mapType = MapType.normal),
-                  ),
-                  SpeedDialChild(
-                    label: 'Satelite',
-                    child: Icon(Icons.satellite),
-                    onTap: () => setState(() => mapType = MapType.satellite),
-                  ),
-                  SpeedDialChild(
-                    label: 'Hibrido',
-                    child: Icon(Icons.compare),
-                    onTap: () => setState(() => mapType = MapType.hybrid),
-                  ),
-                  SpeedDialChild(
-                    label: 'Terreno',
-                    child: Icon(Icons.terrain),
-                    onTap: () => setState(() => mapType = MapType.terrain),
-                  )
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 8, right: 8),
+            //   child: SpeedDial(
+            //     animatedIcon: AnimatedIcons.menu_close,
+            //     overlayColor: Colors.black,
+            //     overlayOpacity: 0.5,
+            //     elevation: 8.0,
+            //     children: [
+            //       SpeedDialChild(
+            //         label: 'Normal',
+            //         child: Icon(Icons.room),
+            //         onTap: () => setState(() => mapType = MapType.normal),
+            //       ),
+            //       SpeedDialChild(
+            //         label: 'Satelite',
+            //         child: Icon(Icons.satellite),
+            //         onTap: () => setState(() => mapType = MapType.satellite),
+            //       ),
+            //       SpeedDialChild(
+            //         label: 'Hibrido',
+            //         child: Icon(Icons.compare),
+            //         onTap: () => setState(() => mapType = MapType.hybrid),
+            //       ),
+            //       SpeedDialChild(
+            //         label: 'Terreno',
+            //         child: Icon(Icons.terrain),
+            //         onTap: () => setState(() => mapType = MapType.terrain),
+            //       )
+            //     ],
+            //   ),
+            // ),
             Visibility(
               child: MarkerInfo(
                 title: 'Mi Ubicacion',
