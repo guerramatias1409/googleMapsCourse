@@ -34,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   MapType mapType = MapType.normal;
   BitmapDescriptor icon;
   bool infoShown = false;
+  GoogleMapController controller;
 
   @override
   void initState() {
@@ -49,6 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void onDragEnd(LatLng position) {
+    print('new position $position');
+  }
+
+  void onMapCreated(GoogleMapController _controller) {
+    this.controller = _controller;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,15 +70,48 @@ class _MyHomePageState extends State<MyHomePage> {
               mapType: mapType,
               initialCameraPosition: CameraPosition(
                 target: position,
-                zoom: 11,
+                zoom: 1,
+                bearing: 0,
+                tilt: 45,
               ),
+              // Manejar cuando la camara se empieza a mover
+              onCameraMoveStarted: () {
+                print('inicio');
+              },
+              // Manejar cuando la camara deja de moverse
+              onCameraIdle: () {
+                print('fin');
+              },
+              // Maneja cuando la camara se esta moviendo
+              onCameraMove: (CameraPosition cameraPosition) {
+                print('Moviendo ${cameraPosition.target}');
+              },
+              // Limitar la camara
+              cameraTargetBounds: CameraTargetBounds(
+                LatLngBounds(
+                  northeast: LatLng(40.73215972821489, -73.980936957489),
+                  southwest: LatLng(40.7152797683329, -74.01919598687743),
+                ),
+              ),
+              // Limitar el zoom de la camara
+              minMaxZoomPreference: MinMaxZoomPreference(1, 10),
+              onMapCreated: onMapCreated,
               markers: this.icon != null
                   ? {
                       Marker(
                           markerId: MarkerId(position.toString()),
                           position: position,
                           icon: this.icon,
-                          onTap: () => setState((){this.infoShown = !this.infoShown;})),
+                          onTap: () => setState(() {
+                                //Mover camara a una nueva posicion al hacer click
+                                controller.animateCamera(
+                                    CameraUpdate.newCameraPosition(
+                                        CameraPosition(
+                                  target: LatLng(63.637353, 83.914375),
+                                  zoom: 10,
+                                )));
+                                this.infoShown = !this.infoShown;
+                              })),
                     }
                   : {},
             ),
@@ -114,9 +156,5 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ));
-  }
-
-  void onDragEnd(LatLng position) {
-    print('new position $position');
   }
 }
