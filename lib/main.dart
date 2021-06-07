@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:google_maps_course/marker_info.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
@@ -32,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   LatLng position = LatLng(-34.58720957992827, -58.64496244855623);
   MapType mapType = MapType.normal;
   BitmapDescriptor icon;
+  bool infoShown = false;
 
   @override
   void initState() {
@@ -61,17 +63,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 target: position,
                 zoom: 11,
               ),
-              markers: this.icon != null ? {
-                Marker(
-                  markerId: MarkerId(position.toString()),
-                  position: position,
-                  icon: this.icon,
-                  infoWindow: InfoWindow(
-                    title: 'Informacion del marcador',
-                    snippet: 'Latitud ${position.latitude}, Longitud: ${position.longitude}'
-                  )
-                ),
-              } : {},
+              markers: this.icon != null
+                  ? {
+                      Marker(
+                          markerId: MarkerId(position.toString()),
+                          position: position,
+                          icon: this.icon,
+                          onTap: () => setState((){this.infoShown = !this.infoShown;})),
+                    }
+                  : {},
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 8, right: 8),
@@ -103,7 +103,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
                 ],
               ),
-            )
+            ),
+            Visibility(
+              child: MarkerInfo(
+                title: 'Mi Ubicacion',
+                latLng: this.position,
+                image: 'img/arrow.png',
+              ),
+              visible: this.infoShown,
+            ),
           ],
         ));
   }
