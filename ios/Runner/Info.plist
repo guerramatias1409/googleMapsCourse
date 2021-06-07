@@ -6,6 +6,10 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Necesario para la ubicacion</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Necesario para la ubicacion</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
