@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_maps_course/marker_info.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as lc;
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,11 +39,40 @@ class _MyHomePageState extends State<MyHomePage> {
   bool infoShown = false;
   GoogleMapController controller;
   LatLng latLngOnLongPress;
+  lc.Location location;
 
   @override
   void initState() {
     getIcon();
+    requestPerms();
     super.initState();
+  }
+
+  void requestPerms() async {
+    print('request params');
+    Map<Permission, PermissionStatus> statuses =
+        await [Permission.locationAlways].request();
+
+    var status = statuses[Permission.locationAlways];
+    if (status == PermissionStatus.granted) {
+      print('permission granted');
+      enableGPS();
+    } else {
+      print('permission denied');
+      requestPerms();
+    }
+  }
+
+  void enableGPS() async {
+    print('enable gps');
+    location = lc.Location();
+    bool serviceStatusResult = await location.requestService();
+    if (!serviceStatusResult) {
+      print('no habilito gps');
+      enableGPS();
+    } else {
+
+    }
   }
 
   void getIcon() async {
@@ -111,8 +143,8 @@ class _MyHomePageState extends State<MyHomePage> {
               buildingsEnabled: true,
 
               // Activar o desactivar gestos
-              rotateGesturesEnabled: false,
-              scrollGesturesEnabled: false,
+              rotateGesturesEnabled: true,
+              scrollGesturesEnabled: true,
               zoomControlsEnabled: false,
               tiltGesturesEnabled: false,
 
