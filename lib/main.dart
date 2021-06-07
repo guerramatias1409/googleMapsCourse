@@ -42,12 +42,38 @@ class _MyHomePageState extends State<MyHomePage> {
   lc.Location location;
   bool myLocationEnabled = false;
   bool myLocationButtonEnabled = false;
+  LatLng currentLocation = LatLng(-34.58720957992827, -58.64496244855623);
 
   @override
   void initState() {
     getIcon();
     requestPerms();
     super.initState();
+  }
+
+  void getLocation() async {
+    var currentLocation = await location.getLocation();
+    updateLocation(currentLocation);
+  }
+
+  updateLocation(_currentLocation) {
+    if (_currentLocation != null) {
+      print('UBICACION ACTUAL DEL USUARIO LATITUD: ${_currentLocation.latitude}, LONGITUD ${_currentLocation.longitude}');
+      setState(() {
+        this.currentLocation = LatLng(_currentLocation.latitude, _currentLocation.longitude);
+        this.controller.animateCamera(CameraUpdate.newCameraPosition(
+              CameraPosition(target: this.currentLocation , zoom: 17),
+            ));
+      });
+    }
+  }
+
+  locationChanged(){
+    location.onLocationChanged.listen((lc.LocationData cLoc){
+      if(cLoc!=null){
+        updateLocation(cLoc);
+      }
+    });
   }
 
   void requestPerms() async {
@@ -73,11 +99,14 @@ class _MyHomePageState extends State<MyHomePage> {
       print('no habilito gps');
       enableGPS();
     } else {
+      print('habilito gps');
       updateStatus();
+      getLocation();
+      locationChanged();
     }
   }
 
-  void updateStatus(){
+  void updateStatus() {
     print('update status');
     setState(() {
       myLocationEnabled = true;
