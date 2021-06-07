@@ -40,6 +40,8 @@ class _MyHomePageState extends State<MyHomePage> {
   GoogleMapController controller;
   LatLng latLngOnLongPress;
   lc.Location location;
+  bool myLocationEnabled = false;
+  bool myLocationButtonEnabled = false;
 
   @override
   void initState() {
@@ -71,8 +73,16 @@ class _MyHomePageState extends State<MyHomePage> {
       print('no habilito gps');
       enableGPS();
     } else {
-
+      updateStatus();
     }
+  }
+
+  void updateStatus(){
+    print('update status');
+    setState(() {
+      myLocationEnabled = true;
+      myLocationButtonEnabled = true;
+    });
   }
 
   void getIcon() async {
@@ -148,6 +158,8 @@ class _MyHomePageState extends State<MyHomePage> {
               zoomControlsEnabled: false,
               tiltGesturesEnabled: false,
 
+              myLocationEnabled: myLocationEnabled,
+              myLocationButtonEnabled: myLocationButtonEnabled,
               mapType: mapType,
               initialCameraPosition: CameraPosition(
                 target: position,
