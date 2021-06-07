@@ -31,6 +31,21 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   LatLng position = LatLng(-34.58720957992827, -58.64496244855623);
   MapType mapType = MapType.normal;
+  BitmapDescriptor icon;
+
+  @override
+  void initState() {
+    getIcon();
+    super.initState();
+  }
+
+  void getIcon() async {
+    BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(devicePixelRatio: 2.5), 'img/arrow.png')
+        .then(
+      (_icon) => setState(() => this.icon = _icon),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,26 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 target: position,
                 zoom: 11,
               ),
-              markers: {
+              markers: this.icon != null ? {
                 Marker(
                   markerId: MarkerId(position.toString()),
                   position: position,
-                  alpha: 0.8, //Opacidad del marcador
-                  anchor: const Offset(0.2, 0.2), //Mueve el marker hacia algun lado
-                  draggable: true, //Permite mover el marker haciendo click
-                  onDragEnd: onDragEnd, //Metodo que se dispara al terminar de mover el marker
-                  zIndex: 2 //Indice que marca si quedara encima o debajo de otros markers
+                  icon: this.icon,
                 ),
-                Marker(
-                  markerId: MarkerId('2'),
-                  position: LatLng(-34.60947687154119, -58.76228302717209),
-                  alpha: 0.8, //Opacidad del marcador
-                  anchor: const Offset(0.2, 0.2), //Mueve el marker hacia algun lado
-                  draggable: true, //Permite mover el marker haciendo click
-                  onDragEnd: onDragEnd, //Metodo que se dispara al terminar de mover el marker
-                  zIndex: 1
-                )
-              },
+              } : {},
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 8, right: 8),
@@ -102,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  void onDragEnd(LatLng position){
+  void onDragEnd(LatLng position) {
     print('new position $position');
   }
 }
