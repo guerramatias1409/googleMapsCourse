@@ -47,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Set<Marker> markers = Set<Marker>();
   Set<Circle> circles = Set<Circle>();
   Set<Polygon> poligons = Set<Polygon>();
+  Set<Polyline> polilines = Set<Polyline>();
 
   @override
   void initState() {
@@ -73,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
         createMarkers();
         createCircle();
         createPolygon();
+        createPolilines();
       });
     }
   }
@@ -113,7 +115,28 @@ class _MyHomePageState extends State<MyHomePage> {
           LatLng(20.593586, -103.464779),
           LatLng(19.431120, -99.214260),
           LatLng(22.165459, -100.999178),
-        ]
+        ],
+        visible: false
+      )
+    );
+  }
+
+  createPolilines(){
+    polilines.add(
+      Polyline(
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        jointType: JointType.bevel,
+        // patterns: <PatternItem>[
+        //   PatternItem.dot
+        // ],
+        points: <LatLng>[
+          LatLng(20.593586, -103.464779),
+          LatLng(19.431120, -99.214260),
+          LatLng(22.165459, -100.999178),
+        ],
+        polylineId: PolylineId('polilineMap'),
+        color: Colors.yellow
       )
     );
   }
@@ -247,6 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
               circles: circles,
               polygons: poligons,
+              polylines: polilines,
 
               mapType: mapType,
               initialCameraPosition: CameraPosition(
