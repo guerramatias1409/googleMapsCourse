@@ -66,6 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   markerId: MarkerId(position.toString()),
                   position: position,
                   icon: this.icon,
+                  infoWindow: InfoWindow(
+                    title: 'Informacion del marcador',
+                    snippet: 'Latitud ${position.latitude}, Longitud: ${position.longitude}'
+                  )
                 ),
               } : {},
             ),
