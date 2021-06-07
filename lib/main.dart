@@ -46,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   LatLng currentLocation = LatLng(-34.58720957992827, -58.64496244855623);
   Set<Marker> markers = Set<Marker>();
   Set<Circle> circles = Set<Circle>();
+  Set<Polygon> poligons = Set<Polygon>();
 
   @override
   void initState() {
@@ -71,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ));
         createMarkers();
         createCircle();
+        createPolygon();
       });
     }
   }
@@ -98,6 +100,22 @@ class _MyHomePageState extends State<MyHomePage> {
         consumeTapEvents: true
 
       ));
+  }
+
+  createPolygon(){
+    poligons.add(
+      Polygon(
+        polygonId: PolygonId('polygonMap'),
+        strokeWidth: 6,
+        strokeColor: Colors.black,
+        fillColor: Colors.white,
+        points: <LatLng>[
+          LatLng(20.593586, -103.464779),
+          LatLng(19.431120, -99.214260),
+          LatLng(22.165459, -100.999178),
+        ]
+      )
+    );
   }
   
   onTapCircle(){
@@ -228,6 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
               myLocationButtonEnabled: myLocationButtonEnabled,
 
               circles: circles,
+              polygons: poligons,
 
               mapType: mapType,
               initialCameraPosition: CameraPosition(
