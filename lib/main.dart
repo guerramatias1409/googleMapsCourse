@@ -35,6 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   BitmapDescriptor icon;
   bool infoShown = false;
   GoogleMapController controller;
+  LatLng latLngOnLongPress;
 
   @override
   void initState() {
@@ -56,6 +57,39 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void onMapCreated(GoogleMapController _controller) {
     this.controller = _controller;
+  }
+
+  void onTapMap(LatLng latLng) {
+    print('onTapMap $latLng');
+  }
+
+  void onLongPressMap(LatLng latLng) async {
+    print('onLongPress');
+    latLngOnLongPress = latLng;
+    showPopMenu();
+  }
+
+  void showPopMenu() async {
+    String selected = await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(200, 200, 250, 250),
+      items: [
+        PopupMenuItem<String>(
+          child: Text('Que hay aqui'),
+          value: 'Que Hay',
+        ),
+        PopupMenuItem<String>(
+          child: Text('Ir a'),
+          value: 'Ir',
+        ),
+      ],
+      elevation: 8,
+    );
+    if (selected != null) getValue(selected);
+  }
+
+  void getValue(String value) {
+    if (value == 'Que Hay') print('Ubicacion $latLngOnLongPress');
   }
 
   @override
@@ -86,15 +120,20 @@ class _MyHomePageState extends State<MyHomePage> {
               onCameraMove: (CameraPosition cameraPosition) {
                 print('Moviendo ${cameraPosition.target}');
               },
+
+              onTap: onTapMap,
+              onLongPress: onLongPressMap,
+
               // Limitar la camara
-              cameraTargetBounds: CameraTargetBounds(
-                LatLngBounds(
-                  northeast: LatLng(40.73215972821489, -73.980936957489),
-                  southwest: LatLng(40.7152797683329, -74.01919598687743),
-                ),
-              ),
+              // cameraTargetBounds: CameraTargetBounds(
+              //   LatLngBounds(
+              //     northeast: LatLng(40.73215972821489, -73.980936957489),
+              //     southwest: LatLng(40.7152797683329, -74.01919598687743),
+              //   ),
+              // ),
+
               // Limitar el zoom de la camara
-              minMaxZoomPreference: MinMaxZoomPreference(1, 10),
+              // minMaxZoomPreference: MinMaxZoomPreference(1, 10),
               onMapCreated: onMapCreated,
               markers: this.icon != null
                   ? {
