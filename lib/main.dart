@@ -44,6 +44,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool myLocationEnabled = false;
   bool myLocationButtonEnabled = false;
   LatLng currentLocation = LatLng(-34.58720957992827, -58.64496244855623);
+  Set<Marker> markers = Set<Marker>();
+  Set<Circle> circles = Set<Circle>();
 
   @override
   void initState() {
@@ -59,19 +61,52 @@ class _MyHomePageState extends State<MyHomePage> {
 
   updateLocation(_currentLocation) {
     if (_currentLocation != null) {
-      print('UBICACION ACTUAL DEL USUARIO LATITUD: ${_currentLocation.latitude}, LONGITUD ${_currentLocation.longitude}');
+      print(
+          'UBICACION ACTUAL DEL USUARIO LATITUD: ${_currentLocation.latitude}, LONGITUD ${_currentLocation.longitude}');
       setState(() {
-        this.currentLocation = LatLng(_currentLocation.latitude, _currentLocation.longitude);
+        this.currentLocation =
+            LatLng(_currentLocation.latitude, _currentLocation.longitude);
         this.controller.animateCamera(CameraUpdate.newCameraPosition(
-              CameraPosition(target: this.currentLocation , zoom: 17),
+              CameraPosition(target: this.currentLocation, zoom: 17),
             ));
+        createMarkers();
+        createCircle();
       });
     }
   }
 
-  locationChanged(){
-    location.onLocationChanged.listen((lc.LocationData cLoc){
-      if(cLoc!=null){
+  createMarkers() {
+    markers.add(Marker(
+        markerId: MarkerId('MarkerCurrent'),
+        position: currentLocation,
+        icon: this.icon,
+        onTap: () => setState(() {
+              this.infoShown = !this.infoShown;
+            })));
+  }
+
+  createCircle(){
+    circles.add(
+      Circle(
+        circleId: CircleId('CircleMap'),
+        center: this.currentLocation,
+        onTap: (){},
+        fillColor: Colors.red,
+        radius: 4000,
+        strokeColor: Colors.green,
+        strokeWidth: 6,
+        consumeTapEvents: true
+
+      ));
+  }
+  
+  onTapCircle(){
+    print('onTapCircle');
+  }
+
+  locationChanged() {
+    location.onLocationChanged.listen((lc.LocationData cLoc) {
+      if (cLoc != null) {
         updateLocation(cLoc);
       }
     });
@@ -191,6 +226,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
               myLocationEnabled: myLocationEnabled,
               myLocationButtonEnabled: myLocationButtonEnabled,
+
+              circles: circles,
+
               mapType: mapType,
               initialCameraPosition: CameraPosition(
                 target: position,
@@ -226,22 +264,23 @@ class _MyHomePageState extends State<MyHomePage> {
               // minMaxZoomPreference: MinMaxZoomPreference(1, 10),
               onMapCreated: onMapCreated,
               markers: this.icon != null
-                  ? {
-                      Marker(
-                          markerId: MarkerId(position.toString()),
-                          position: position,
-                          icon: this.icon,
-                          onTap: () => setState(() {
-                                //Mover camara a una nueva posicion al hacer click
-                                controller.animateCamera(
-                                    CameraUpdate.newCameraPosition(
-                                        CameraPosition(
-                                  target: LatLng(63.637353, 83.914375),
-                                  zoom: 10,
-                                )));
-                                this.infoShown = !this.infoShown;
-                              })),
-                    }
+                  ? markers
+                    // {
+                    //   Marker(
+                    //       markerId: MarkerId(position.toString()),
+                    //       position: position,
+                    //       icon: this.icon,
+                    //       onTap: () => setState(() {
+                    //             //Mover camara a una nueva posicion al hacer click
+                    //             controller.animateCamera(
+                    //                 CameraUpdate.newCameraPosition(
+                    //                     CameraPosition(
+                    //               target: LatLng(63.637353, 83.914375),
+                    //               zoom: 10,
+                    //             )));
+                    //             this.infoShown = !this.infoShown;
+                    //           })),
+                    // }
                   : {},
             ),
             // Padding(
